@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRO Cloud Storage</title>
+    <title>이미지 미리보기</title>
     <style>
         :root {
             --bg-color: #1e1e1e; --container-bg: #252526; --card-bg: #2d2d30;
@@ -13,32 +13,34 @@
             --bg-color: #ffffff; --container-bg: #f3f3f3; --card-bg: #ffffff;
             --text-color: #333333; --border-color: #dddddd;
         }
-        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; margin: 0; transition: 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Pretendard', 'Segoe UI', sans-serif; margin: 0; transition: 0.3s; }
         
-        header { background-color: var(--vscode-blue); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
-        .btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 5px 15px; border-radius: 4px; cursor: pointer; }
+        header { background-color: var(--vscode-blue); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn:hover { background: rgba(255,255,255,0.3); }
 
         .container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
         
-        /* 카드 공통 스타일 */
-        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .card:hover { transform: translateY(-5px); border-color: var(--vscode-blue); }
         .img-box { width: 100%; height: 180px; background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .img-box img { width: 100%; height: 100%; object-fit: cover; }
         .card-info { padding: 15px; text-align: center; }
+        .card-info h3 { margin: 10px 0; font-size: 18px; }
+        .card-info p { font-size: 14px; color: #888; }
 
-        /* 뒤로가기 버튼 */
         .back-area { margin-bottom: 20px; display: none; }
-        .back-btn { background: var(--vscode-blue); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        .back-btn { background: var(--vscode-blue); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .back-btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body class="dark">
 
     <header>
-        <h2 id="title">TRO Explorer</h2>
+        <h2 id="title" style="margin:0;">이미지 미리보기</h2>
         <div>
-            <button class="btn" onclick="toggleMode()">Mode Toggle</button>
+            <button class="btn" onclick="toggleMode()">모드 전환</button>
         </div>
     </header>
 
@@ -49,85 +51,79 @@
 
         <div class="gallery" id="categoryView">
             <div class="card" onclick="showDetail('TRO')">
-                <div class="img-box"><img src="TRO_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=TRO_1.webp'"></div>
-                <div class="card-info"><h3>TRO Series</h3><p>TRO_n 이미지 모음</p></div>
+                <div class="img-box"><img src="TRO_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=TRO_1'"></div>
+                <div class="card-info"><h3>TRO 미리보기</h3><p>TRO_n 이미지 시리즈</p></div>
             </div>
             <div class="card" onclick="showDetail('LEN')">
-                <div class="img-box"><img src="LEN_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=LEN_1.webp'"></div>
-                <div class="card-info"><h3>LEN Series</h3><p>LEN_n 이미지 모음</p></div>
+                <div class="img-box"><img src="LEN_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=LEN_1'"></div>
+                <div class="card-info"><h3>LEN 미리보기</h3><p>LEN_n 이미지 시리즈</p></div>
             </div>
             <div class="card" onclick="showDetail('STA')">
-                <div class="img-box"><img src="STA_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=STA_1.webp'"></div>
-                <div class="card-info"><h3>STA Series</h3><p>STA_n 이미지 모음</p></div>
+                <div class="img-box"><img src="STA_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=STA_1'"></div>
+                <div class="card-info"><h3>STA 미리보기</h3><p>STA_n 이미지 시리즈</p></div>
             </div>
             <div class="card" onclick="showDetail('NIC')">
-                <div class="img-box"><img src="NIC_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=NIC_1.webp'"></div>
-                <div class="card-info"><h3>NIC Series</h3><p>NIC_n 이미지 모음</p></div>
+                <div class="img-box"><img src="NIC_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=NIC_1'"></div>
+                <div class="card-info"><h3>NIC 미리보기</h3><p>NIC_n 이미지 시리즈</p></div>
             </div>
         </div>
 
         <div class="gallery" id="detailView" style="display: none;"></div>
     </div>
 
-<script>
-    const categoryView = document.getElementById('categoryView');
-    const detailView = document.getElementById('detailView');
-    const backArea = document.getElementById('backArea');
-    const title = document.getElementById('title');
+    <script>
+        const categoryView = document.getElementById('categoryView');
+        const detailView = document.getElementById('detailView');
+        const backArea = document.getElementById('backArea');
+        const title = document.getElementById('title');
 
-    // 1. 상세 페이지 보기 (이미지 카드 클릭 시 이동 기능 추가)
-    function showDetail(prefix) {
-        categoryView.style.display = 'none';
-        detailView.style.display = 'grid';
-        backArea.style.display = 'block';
-        title.innerText = prefix + " Repository";
+        function showDetail(prefix) {
+            categoryView.style.display = 'none';
+            detailView.style.display = 'grid';
+            backArea.style.display = 'block';
+            // 내부 제목도 "TRO 미리보기" 형식으로 변경
+            title.innerText = prefix + " 미리보기";
 
-        detailView.innerHTML = ''; 
-        
-        // n개 사진 생성
-        for (let i = 1; i <= 10; i++) {
-            const fileName = `${prefix}_${i}.webp`;
-            const card = document.createElement('div');
-            card.className = 'card';
-            
-            // ⭐ 핵심 추가: 카드 전체를 클릭하면 이미지 링크로 직접 이동합니다.
-            card.onclick = function() {
-                location.href = '/' + fileName;
-            };
+            detailView.innerHTML = ''; 
+            for (let i = 1; i <= 12; i++) { // 12개로 늘려봤어!
+                const fileName = `${prefix}_${i}.webp`; // 아까 배운 WebP 적용!
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => location.href = '/' + fileName;
 
-            card.innerHTML = `
-                <div class="img-box">
-                    <img src="${fileName}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                </div>
-                <div class="card-info">
-                    <strong>${fileName}</strong><br><br>
-                    <button class="btn" style="background:var(--vscode-blue); width:100%" 
-                        onclick="event.stopPropagation(); copyText('${fileName}')">
-                        Copy Link
-                    </button>
-                </div>
-            `;
-            detailView.appendChild(card);
+                card.innerHTML = `
+                    <div class="img-box">
+                        <img src="${fileName}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                    </div>
+                    <div class="card-info">
+                        <strong>${fileName}</strong><br><br>
+                        <button class="btn" style="background:var(--vscode-blue); width:100%" 
+                            onclick="event.stopPropagation(); copyText('${fileName}')">
+                            주소 복사
+                        </button>
+                    </div>
+                `;
+                detailView.appendChild(card);
+            }
         }
-    }
 
-    // 2. 메인 화면으로 돌아가기
-    function showMain() {
-        categoryView.style.display = 'grid';
-        detailView.style.display = 'none';
-        backArea.style.display = 'none';
-        title.innerText = "TRO Explorer";
-    }
+        function showMain() {
+            categoryView.style.display = 'grid';
+            detailView.style.display = 'none';
+            backArea.style.display = 'none';
+            title.innerText = "이미지 미리보기";
+        }
 
-    // 다크모드 토글
-    function toggleMode() { document.body.classList.toggle('light'); }
-    
-    // 링크 복사
-    function copyText(name) {
-        const url = window.location.origin + '/' + name;
-        navigator.clipboard.writeText(url).then(() => alert('링크가 복사되었습니다!'));
-    }
-</script>
+        function toggleMode() {
+            const isLight = document.body.classList.toggle('light');
+            document.querySelector('.btn').innerText = isLight ? "다크 모드" : "라이트 모드";
+        }
+        
+        function copyText(name) {
+            const url = window.location.origin + '/' + name;
+            navigator.clipboard.writeText(url).then(() => alert('복사 완료: ' + url));
+        }
+    </script>
 </body>
 </html>
 
