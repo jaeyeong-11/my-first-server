@@ -3,72 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나만의 이미지 창고 🖼️</title>
+    <title>TRO Image Repository</title>
     <style>
-        /* 깔끔한 다크 모드 스타일 */
-        body { font-family: 'Pretendard', sans-serif; background-color: #121212; color: white; text-align: center; margin: 0; padding: 20px; }
-        h1 { margin-bottom: 30px; color: #00e676; }
-        
-        /* 이미지 그리드 설정 */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+        /* VS Code 스타일 색상 변수 */
+        :root {
+            --bg-color: #ffffff;
+            --container-bg: #f3f3f3;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --vscode-blue: #007acc;
+            --border-color: #dddddd;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        body.dark {
+            --bg-color: #1e1e1e;
+            --container-bg: #252526;
+            --card-bg: #2d2d30;
+            --text-color: #d4d4d4;
+            --border-color: #3e3e42;
+            --shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: var(--vscode-blue);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .toggle-btn:hover { background: rgba(255, 255, 255, 0.3); }
+
+        /* 메인 컨테이너 */
+        .container {
+            padding: 40px 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .image-card {
-            background: #1e1e1e;
-            border-radius: 12px;
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        /* 이미지 카드 스타일 */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.3s ease;
-            border: 1px solid #333;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
         }
 
-        .image-card:hover { transform: translateY(-5px); border-color: #00e676; }
-
-        .image-card img { width: 100%; height: 200px; object-fit: cover; }
-
-        .image-info { padding: 15px; }
-        .image-info p { margin: 0 0 10px 0; font-size: 14px; color: #bbb; }
-        
-        /* 링크 복사 버튼 */
-        .copy-btn {
-            background: #00e676; border: none; padding: 8px 15px;
-            border-radius: 6px; cursor: pointer; font-weight: bold;
-            transition: background 0.2s;
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--vscode-blue);
         }
-        .copy-btn:hover { background: #00c853; }
+
+        .img-box {
+            width: 100%;
+            height: 180px;
+            background-color: var(--container-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-info {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .filename {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .copy-link {
+            background-color: var(--vscode-blue);
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 13px;
+        }
+
+        .copy-link:hover { opacity: 0.9; }
     </style>
 </head>
-<body>
+<body class="dark"> <header>
+        <h2 style="margin:0;">TRO Explorer</h2>
+        <button class="toggle-btn" onclick="toggleMode()">Light Mode</button>
+    </header>
 
-    <h1>My Image Hosting 🚀</h1>
-    
-    <div class="gallery">
-        <div class="image-card">
-            <img src="cat.png" alt="이미지">
-            <div class="image-info">
-                <p>cat.png</p>
-                <button class="copy-btn" onclick="copyLink('cat.png')">주소 복사</button>
+    <div class="container">
+        <div class="gallery" id="gallery">
             </div>
-        </div>
-
-        <div class="image-card">
-            <img src="dog.jpg" alt="이미지">
-            <div class="image-info">
-                <p>dog.jpg</p>
-                <button class="copy-btn" onclick="copyLink('dog.jpg')">주소 복사</button>
-            </div>
-        </div>
     </div>
 
     <script>
-        function copyLink(fileName) {
-            const url = window.location.origin + '/' + fileName;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('링크가 복사되었습니다! : ' + url);
+        // 1. 다크/화이트 모드 전환 함수
+        function toggleMode() {
+            const body = document.body;
+            const btn = document.querySelector('.toggle-btn');
+            body.classList.toggle('dark');
+            
+            if(body.classList.contains('dark')) {
+                btn.innerText = "Light Mode";
+            } else {
+                btn.innerText = "Dark Mode";
+            }
+        }
+
+        // 2. TRO_n 리스트 자동 생성 (테스트용)
+        const gallery = document.getElementById('gallery');
+        const numberOfFiles = 12; // 보여주고 싶은 이미지 개수
+
+        for (let i = 1; i <= numberOfFiles; i++) {
+            const fileName = `TRO_${i}.png`;
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="img-box">
+                    <img src="${fileName}" alt="${fileName}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                </div>
+                <div class="card-info">
+                    <span class="filename">${fileName}</span>
+                    <button class="copy-link" onclick="copyText('${fileName}')">Copy Link</button>
+                </div>
+            `;
+            gallery.appendChild(card);
+        }
+
+        // 3. 링크 복사 함수
+        function copyText(name) {
+            const fullUrl = window.location.origin + '/' + name;
+            navigator.clipboard.writeText(fullUrl).then(() => {
+                alert('복사 완료: ' + fullUrl);
             });
         }
     </script>
