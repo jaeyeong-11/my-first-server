@@ -3,182 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRO Image Repository</title>
+    <title>TRO Cloud Storage</title>
     <style>
-        /* VS Code 스타일 색상 변수 */
         :root {
-            --bg-color: #ffffff;
-            --container-bg: #f3f3f3;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --vscode-blue: #007acc;
-            --border-color: #dddddd;
-            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --bg-color: #1e1e1e; --container-bg: #252526; --card-bg: #2d2d30;
+            --text-color: #d4d4d4; --vscode-blue: #007acc; --border-color: #3e3e42;
         }
-
-        body.dark {
-            --bg-color: #1e1e1e;
-            --container-bg: #252526;
-            --card-bg: #2d2d30;
-            --text-color: #d4d4d4;
-            --border-color: #3e3e42;
-            --shadow: 0 4px 10px rgba(0,0,0,0.3);
+        body.light {
+            --bg-color: #ffffff; --container-bg: #f3f3f3; --card-bg: #ffffff;
+            --text-color: #333333; --border-color: #dddddd;
         }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; margin: 0; transition: 0.3s; }
+        
+        header { background-color: var(--vscode-blue); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+        .btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 5px 15px; border-radius: 4px; cursor: pointer; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            transition: all 0.3s ease;
-        }
+        .container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
+        
+        /* 카드 공통 스타일 */
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--vscode-blue); }
+        .img-box { width: 100%; height: 180px; background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .card-info { padding: 15px; text-align: center; }
 
-        /* 헤더 스타일 */
-        header {
-            background-color: var(--vscode-blue);
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow);
-        }
-
-        .toggle-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid white;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .toggle-btn:hover { background: rgba(255, 255, 255, 0.3); }
-
-        /* 메인 컨테이너 */
-        .container {
-            padding: 40px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
-        }
-
-        /* 이미지 카드 스타일 */
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--vscode-blue);
-        }
-
-        .img-box {
-            width: 100%;
-            height: 180px;
-            background-color: var(--container-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card-info {
-            padding: 15px;
-            text-align: center;
-        }
-
-        .filename {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            display: block;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .copy-link {
-            background-color: var(--vscode-blue);
-            color: white;
-            border: none;
-            padding: 7px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 13px;
-        }
-
-        .copy-link:hover { opacity: 0.9; }
+        /* 뒤로가기 버튼 */
+        .back-area { margin-bottom: 20px; display: none; }
+        .back-btn { background: var(--vscode-blue); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
-<body class="dark"> <header>
-        <h2 style="margin:0;">TRO Explorer</h2>
-        <button class="toggle-btn" onclick="toggleMode()">Light Mode</button>
+<body class="dark">
+
+    <header>
+        <h2 id="title">TRO Explorer</h2>
+        <div>
+            <button class="btn" onclick="toggleMode()">Mode Toggle</button>
+        </div>
     </header>
 
     <div class="container">
-        <div class="gallery" id="gallery">
+        <div class="back-area" id="backArea">
+            <button class="back-btn" onclick="showMain()">← 카테고리로 돌아가기</button>
+        </div>
+
+        <div class="gallery" id="categoryView">
+            <div class="card" onclick="showDetail('TRO')">
+                <div class="img-box"><img src="TRO_1.png" onerror="this.src='https://via.placeholder.com/300x200?text=TRO_1.png'"></div>
+                <div class="card-info"><h3>TRO Series</h3><p>TRO_n 이미지 모음</p></div>
             </div>
+            <div class="card" onclick="showDetail('LEN')">
+                <div class="img-box"><img src="LEN_1.png" onerror="this.src='https://via.placeholder.com/300x200?text=LEN_1.png'"></div>
+                <div class="card-info"><h3>LEN Series</h3><p>LEN_n 이미지 모음</p></div>
+            </div>
+            <div class="card" onclick="showDetail('STA')">
+                <div class="img-box"><img src="STA_1.png" onerror="this.src='https://via.placeholder.com/300x200?text=STA_1.png'"></div>
+                <div class="card-info"><h3>STA Series</h3><p>STA_n 이미지 모음</p></div>
+            </div>
+            <div class="card" onclick="showDetail('NIC')">
+                <div class="img-box"><img src="NIC_1.png" onerror="this.src='https://via.placeholder.com/300x200?text=NIC_1.png'"></div>
+                <div class="card-info"><h3>NIC Series</h3><p>NIC_n 이미지 모음</p></div>
+            </div>
+        </div>
+
+        <div class="gallery" id="detailView" style="display: none;"></div>
     </div>
 
     <script>
-        // 1. 다크/화이트 모드 전환 함수
-        function toggleMode() {
-            const body = document.body;
-            const btn = document.querySelector('.toggle-btn');
-            body.classList.toggle('dark');
+        const categoryView = document.getElementById('categoryView');
+        const detailView = document.getElementById('detailView');
+        const backArea = document.getElementById('backArea');
+        const title = document.getElementById('title');
+
+        // 1. 상세 페이지 보기
+        function showDetail(prefix) {
+            categoryView.style.display = 'none';
+            detailView.style.display = 'grid';
+            backArea.style.display = 'block';
+            title.innerText = prefix + " Repository";
+
+            detailView.innerHTML = ''; // 기존 내용 삭제
             
-            if(body.classList.contains('dark')) {
-                btn.innerText = "Light Mode";
-            } else {
-                btn.innerText = "Dark Mode";
+            // n개 사진 생성 (예: 10개씩)
+            for (let i = 1; i <= 10; i++) {
+                const fileName = `${prefix}_${i}.png`;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="img-box">
+                        <img src="${fileName}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                    </div>
+                    <div class="card-info">
+                        <strong>${fileName}</strong><br><br>
+                        <button class="btn" style="background:var(--vscode-blue); width:100%" onclick="event.stopPropagation(); copyText('${fileName}')">Copy Link</button>
+                    </div>
+                `;
+                detailView.appendChild(card);
             }
         }
 
-        // 2. TRO_n 리스트 자동 생성 (테스트용)
-        const gallery = document.getElementById('gallery');
-        const numberOfFiles = 12; // 보여주고 싶은 이미지 개수
-
-        for (let i = 1; i <= numberOfFiles; i++) {
-            const fileName = `TRO_${i}.png`;
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="img-box">
-                    <img src="${fileName}" alt="${fileName}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                </div>
-                <div class="card-info">
-                    <span class="filename">${fileName}</span>
-                    <button class="copy-link" onclick="copyText('${fileName}')">Copy Link</button>
-                </div>
-            `;
-            gallery.appendChild(card);
+        // 2. 메인 화면으로 돌아가기
+        function showMain() {
+            categoryView.style.display = 'grid';
+            detailView.style.display = 'none';
+            backArea.style.display = 'none';
+            title.innerText = "TRO Explorer";
         }
 
-        // 3. 링크 복사 함수
+        function toggleMode() { document.body.classList.toggle('light'); }
+        
         function copyText(name) {
-            const fullUrl = window.location.origin + '/' + name;
-            navigator.clipboard.writeText(fullUrl).then(() => {
-                alert('복사 완료: ' + fullUrl);
-            });
+            const url = window.location.origin + '/' + name;
+            navigator.clipboard.writeText(url).then(() => alert('복사 완료!'));
         }
     </script>
 </body>
