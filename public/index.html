@@ -69,53 +69,65 @@
         <div class="gallery" id="detailView" style="display: none;"></div>
     </div>
 
-    <script>
-        const categoryView = document.getElementById('categoryView');
-        const detailView = document.getElementById('detailView');
-        const backArea = document.getElementById('backArea');
-        const title = document.getElementById('title');
+<script>
+    const categoryView = document.getElementById('categoryView');
+    const detailView = document.getElementById('detailView');
+    const backArea = document.getElementById('backArea');
+    const title = document.getElementById('title');
 
-        // 1. 상세 페이지 보기
-        function showDetail(prefix) {
-            categoryView.style.display = 'none';
-            detailView.style.display = 'grid';
-            backArea.style.display = 'block';
-            title.innerText = prefix + " Repository";
+    // 1. 상세 페이지 보기 (이미지 카드 클릭 시 이동 기능 추가)
+    function showDetail(prefix) {
+        categoryView.style.display = 'none';
+        detailView.style.display = 'grid';
+        backArea.style.display = 'block';
+        title.innerText = prefix + " Repository";
 
-            detailView.innerHTML = ''; // 기존 내용 삭제
-            
-            // n개 사진 생성 (예: 10개씩)
-            for (let i = 1; i <= 10; i++) {
-                const fileName = `${prefix}_${i}.png`;
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="img-box">
-                        <img src="${fileName}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                    </div>
-                    <div class="card-info">
-                        <strong>${fileName}</strong><br><br>
-                        <button class="btn" style="background:var(--vscode-blue); width:100%" onclick="event.stopPropagation(); copyText('${fileName}')">Copy Link</button>
-                    </div>
-                `;
-                detailView.appendChild(card);
-            }
-        }
-
-        // 2. 메인 화면으로 돌아가기
-        function showMain() {
-            categoryView.style.display = 'grid';
-            detailView.style.display = 'none';
-            backArea.style.display = 'none';
-            title.innerText = "TRO Explorer";
-        }
-
-        function toggleMode() { document.body.classList.toggle('light'); }
+        detailView.innerHTML = ''; 
         
-        function copyText(name) {
-            const url = window.location.origin + '/' + name;
-            navigator.clipboard.writeText(url).then(() => alert('복사 완료!'));
+        // n개 사진 생성
+        for (let i = 1; i <= 10; i++) {
+            const fileName = `${prefix}_${i}.png`;
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            // ⭐ 핵심 추가: 카드 전체를 클릭하면 이미지 링크로 직접 이동합니다.
+            card.onclick = function() {
+                location.href = '/' + fileName;
+            };
+
+            card.innerHTML = `
+                <div class="img-box">
+                    <img src="${fileName}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                </div>
+                <div class="card-info">
+                    <strong>${fileName}</strong><br><br>
+                    <button class="btn" style="background:var(--vscode-blue); width:100%" 
+                        onclick="event.stopPropagation(); copyText('${fileName}')">
+                        Copy Link
+                    </button>
+                </div>
+            `;
+            detailView.appendChild(card);
         }
-    </script>
+    }
+
+    // 2. 메인 화면으로 돌아가기
+    function showMain() {
+        categoryView.style.display = 'grid';
+        detailView.style.display = 'none';
+        backArea.style.display = 'none';
+        title.innerText = "TRO Explorer";
+    }
+
+    // 다크모드 토글
+    function toggleMode() { document.body.classList.toggle('light'); }
+    
+    // 링크 복사
+    function copyText(name) {
+        const url = window.location.origin + '/' + name;
+        navigator.clipboard.writeText(url).then(() => alert('링크가 복사되었습니다!'));
+    }
+</script>
 </body>
 </html>
+
