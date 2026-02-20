@@ -1,14 +1,17 @@
 const express = require('express');
 const app = express();
 
-// Render가 주는 포트(PORT)를 쓰거나, 내 컴퓨터에서는 3000번을 씁니다.
-const port = process.env.PORT || 3000;
+// ⭐ 마법의 한 줄: 'public' 폴더 안의 파일들을 누구나 주소로 볼 수 있게 공개합니다!
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.send('환영합니다! 드디어 내 진짜 웹사이트가 Render에서 돌아가고 있어요! 🚀🌍');
+  res.send('이미지 호스팅 서버가 쌩쌩하게 돌아가고 있습니다! 🖼️');
 });
 
-// Render는 0.0.0.0을 안 적어도 알아서 잘 처리해 줍니다!
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Render 서버가 켜졌습니다! 포트: ${port}`);
+  console.log(`서버 켜짐! 포트: ${port}`);
 });
+
+// Vercel을 위해 썼던 코드는 그대로 둡니다.
+module.exports = app;
