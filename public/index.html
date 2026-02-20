@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나만의 이미지 창고 🖼️</title>
+    <style>
+        /* 깔끔한 다크 모드 스타일 */
+        body { font-family: 'Pretendard', sans-serif; background-color: #121212; color: white; text-align: center; margin: 0; padding: 20px; }
+        h1 { margin-bottom: 30px; color: #00e676; }
+        
+        /* 이미지 그리드 설정 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .image-card {
+            background: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: 1px solid #333;
+        }
+
+        .image-card:hover { transform: translateY(-5px); border-color: #00e676; }
+
+        .image-card img { width: 100%; height: 200px; object-fit: cover; }
+
+        .image-info { padding: 15px; }
+        .image-info p { margin: 0 0 10px 0; font-size: 14px; color: #bbb; }
+        
+        /* 링크 복사 버튼 */
+        .copy-btn {
+            background: #00e676; border: none; padding: 8px 15px;
+            border-radius: 6px; cursor: pointer; font-weight: bold;
+            transition: background 0.2s;
+        }
+        .copy-btn:hover { background: #00c853; }
+    </style>
+</head>
+<body>
+
+    <h1>My Image Hosting 🚀</h1>
+    
+    <div class="gallery">
+        <div class="image-card">
+            <img src="cat.png" alt="이미지">
+            <div class="image-info">
+                <p>cat.png</p>
+                <button class="copy-btn" onclick="copyLink('cat.png')">주소 복사</button>
+            </div>
+        </div>
+
+        <div class="image-card">
+            <img src="dog.jpg" alt="이미지">
+            <div class="image-info">
+                <p>dog.jpg</p>
+                <button class="copy-btn" onclick="copyLink('dog.jpg')">주소 복사</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyLink(fileName) {
+            const url = window.location.origin + '/' + fileName;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('링크가 복사되었습니다! : ' + url);
+            });
+        }
+    </script>
+</body>
+</html>
