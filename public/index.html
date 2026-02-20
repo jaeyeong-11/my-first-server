@@ -49,19 +49,19 @@
 
         <div class="gallery" id="categoryView">
             <div class="card" onclick="showDetail('TRO')">
-                <div class="img-box"><img src="TRO_1.png" onerror="this.src='https://via.placeholder.com/300x200?text=TRO_1.png'"></div>
+                <div class="img-box"><img src="TRO_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=TRO_1.webp'"></div>
                 <div class="card-info"><h3>TRO Series</h3><p>TRO_n 이미지 모음</p></div>
             </div>
             <div class="card" onclick="showDetail('LEN')">
-                <div class="img-box"><img src="LEN_1.png" onerror="this.src='https://via.placeholder.com/300x200?text=LEN_1.png'"></div>
+                <div class="img-box"><img src="LEN_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=LEN_1.webp'"></div>
                 <div class="card-info"><h3>LEN Series</h3><p>LEN_n 이미지 모음</p></div>
             </div>
             <div class="card" onclick="showDetail('STA')">
-                <div class="img-box"><img src="STA_1.png" onerror="this.src='https://via.placeholder.com/300x200?text=STA_1.png'"></div>
+                <div class="img-box"><img src="STA_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=STA_1.webp'"></div>
                 <div class="card-info"><h3>STA Series</h3><p>STA_n 이미지 모음</p></div>
             </div>
             <div class="card" onclick="showDetail('NIC')">
-                <div class="img-box"><img src="NIC_1.png" onerror="this.src='https://via.placeholder.com/300x200?text=NIC_1.png'"></div>
+                <div class="img-box"><img src="NIC_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=NIC_1.webp'"></div>
                 <div class="card-info"><h3>NIC Series</h3><p>NIC_n 이미지 모음</p></div>
             </div>
         </div>
@@ -86,7 +86,7 @@
         
         // n개 사진 생성
         for (let i = 1; i <= 10; i++) {
-            const fileName = `${prefix}_${i}.png`;
+            const fileName = `${prefix}_${i}.webp`;
             const card = document.createElement('div');
             card.className = 'card';
             
@@ -130,4 +130,5 @@
 </script>
 </body>
 </html>
+
 
