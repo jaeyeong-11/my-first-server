@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이미지 미리보기</title>
+    <title>캐릭터 이미지 갤러리</title>
     <style>
         :root {
             --bg-color: #1e1e1e; --container-bg: #252526; --card-bg: #2d2d30;
@@ -38,7 +38,7 @@
 <body class="dark">
 
     <header>
-        <h2 id="title" style="margin:0;">이미지 미리보기</h2>
+        <h2 id="title" style="margin:0;">캐릭터 갤러리</h2>
         <div>
             <button class="btn" onclick="toggleMode()">모드 전환</button>
         </div>
@@ -50,55 +50,63 @@
         </div>
 
         <div class="gallery" id="categoryView">
-            <div class="card" onclick="showDetail('TRO')">
-                <div class="img-box"><img src="TRO_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=TRO_1'"></div>
-                <div class="card-info"><h3>TRO 미리보기</h3><p>TRO_n 이미지 시리즈</p></div>
             </div>
-            <div class="card" onclick="showDetail('LEN')">
-                <div class="img-box"><img src="LEN_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=LEN_1'"></div>
-                <div class="card-info"><h3>LEN 미리보기</h3><p>LEN_n 이미지 시리즈</p></div>
-            </div>
-            <div class="card" onclick="showDetail('STA')">
-                <div class="img-box"><img src="STA_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=STA_1'"></div>
-                <div class="card-info"><h3>STA 미리보기</h3><p>STA_n 이미지 시리즈</p></div>
-            </div>
-            <div class="card" onclick="showDetail('NIC')">
-                <div class="img-box"><img src="NIC_1.webp" onerror="this.src='https://via.placeholder.com/300x200?text=NIC_1'"></div>
-                <div class="card-info"><h3>NIC 미리보기</h3><p>NIC_n 이미지 시리즈</p></div>
-            </div>
-        </div>
 
         <div class="gallery" id="detailView" style="display: none;"></div>
     </div>
 
     <script>
+        // 캡처해주신 12개의 캐릭터 코드 목록
+        const characters = ['STA', 'KLT', 'TRO', 'KEL', 'DZE', 'NIC', 'GUK', 'KOR', 'LEN', 'MIL', 'MAK', 'KOL'];
+
         const categoryView = document.getElementById('categoryView');
         const detailView = document.getElementById('detailView');
         const backArea = document.getElementById('backArea');
         const title = document.getElementById('title');
 
+        // 메인 화면에 12개의 캐릭터 카테고리 카드 생성
+        function initCategoryView() {
+            characters.forEach(char => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => showDetail(char);
+                // 메인 카드의 썸네일 경로 수정 (예: STA/STA_1.webp)
+                const thumbPath = `${char}/${char}_1.webp`;
+                
+                card.innerHTML = `
+                    <div class="img-box"><img src="${thumbPath}" onerror="this.src='https://via.placeholder.com/300x200?text=${char}_1'"></div>
+                    <div class="card-info"><h3>${char} 미리보기</h3><p>${char} 이미지 시리즈</p></div>
+                `;
+                categoryView.appendChild(card);
+            });
+        }
+
+        // 특정 캐릭터(prefix) 클릭 시 상세 갤러리 표시
         function showDetail(prefix) {
             categoryView.style.display = 'none';
             detailView.style.display = 'grid';
             backArea.style.display = 'block';
-            // 내부 제목도 "TRO 미리보기" 형식으로 변경
-            title.innerText = prefix + " 미리보기";
+            title.innerText = prefix + " 갤러리";
 
             detailView.innerHTML = ''; 
-            for (let i = 1; i <= 12; i++) { // 12개로 늘려봤어!
-                const fileName = `${prefix}_${i}.webp`; // 아까 배운 WebP 적용!
+            for (let i = 1; i <= 20; i++) { // 각 캐릭터당 보여줄 최대 이미지 수 (필요시 조절)
+                const fileName = `${prefix}_${i}.webp`; 
+                // ✨ 핵심 포인트: 경로를 폴더명/파일명 으로 수정!
+                const fullPath = `${prefix}/${fileName}`; 
+
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = () => location.href = '/' + fileName;
+                // 클릭 시 해당 이미지의 전체 경로로 이동
+                card.onclick = () => location.href = '/' + fullPath;
 
                 card.innerHTML = `
                     <div class="img-box">
-                        <img src="${fileName}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                        <img src="${fullPath}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
                     </div>
                     <div class="card-info">
                         <strong>${fileName}</strong><br><br>
                         <button class="btn" style="background:var(--vscode-blue); width:100%" 
-                            onclick="event.stopPropagation(); copyText('${fileName}')">
+                            onclick="event.stopPropagation(); copyText('${fullPath}')">
                             주소 복사
                         </button>
                     </div>
@@ -111,7 +119,7 @@
             categoryView.style.display = 'grid';
             detailView.style.display = 'none';
             backArea.style.display = 'none';
-            title.innerText = "이미지 미리보기";
+            title.innerText = "캐릭터 갤러리";
         }
 
         function toggleMode() {
@@ -119,12 +127,15 @@
             document.querySelector('.btn').innerText = isLight ? "다크 모드" : "라이트 모드";
         }
         
-        function copyText(name) {
-            const url = window.location.origin + '/' + name;
+        function copyText(path) {
+            // 복사할 주소에 폴더 경로가 포함되도록 수정
+            const url = window.location.origin + '/' + path;
             navigator.clipboard.writeText(url).then(() => alert('복사 완료: ' + url));
         }
+
+        // 페이지 로드 시 카테고리 뷰 초기화
+        initCategoryView();
     </script>
 </body>
 </html>
-
 
