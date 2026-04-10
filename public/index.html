@@ -57,7 +57,7 @@
 
     <script>
         // 캡처해주신 12개의 캐릭터 코드 목록
-        const characters = ['STA', 'KLT', 'TRO', 'KEL', 'DZE', 'NIC', 'GUK', 'KOR', 'LEN', 'MIL', 'MAK', 'KOL'];
+        const characters =;
 
         const categoryView = document.getElementById('categoryView');
         const detailView = document.getElementById('detailView');
@@ -70,11 +70,11 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => showDetail(char);
-                // 메인 카드의 썸네일 경로 수정 (예: STA/STA_1.webp)
-                const thumbPath = `${char}/${char}_1.webp`;
+                // ✨ 수정: 메인 카드의 썸네일 경로를 0번 이미지로 변경
+                const thumbPath = `${char}/${char}_0.webp`; 
                 
                 card.innerHTML = `
-                    <div class="img-box"><img src="${thumbPath}" onerror="this.src='https://via.placeholder.com/300x200?text=${char}_1'"></div>
+                    <div class="img-box"><img src="${thumbPath}" onerror="this.src='https://via.placeholder.com/300x200?text=${char}_0'"></div>
                     <div class="card-info"><h3>${char} 미리보기</h3><p>${char} 이미지 시리즈</p></div>
                 `;
                 categoryView.appendChild(card);
@@ -89,9 +89,9 @@
             title.innerText = prefix + " 갤러리";
 
             detailView.innerHTML = ''; 
-            for (let i = 1; i <= 55; i++) { // 각 캐릭터당 보여줄 최대 이미지 수 (필요시 조절)
+            // ✨ 수정: i = 1 대신 i = 0 부터 시작하도록 변경
+            for (let i = 0; i <= 55; i++) { 
                 const fileName = `${prefix}_${i}.webp`; 
-                // ✨ 핵심 포인트: 경로를 폴더명/파일명 으로 수정!
                 const fullPath = `${prefix}/${fileName}`; 
 
                 const card = document.createElement('div');
