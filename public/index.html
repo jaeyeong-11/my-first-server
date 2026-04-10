@@ -56,8 +56,8 @@
     </div>
 
     <script>
-        // 누락되었던 12개의 캐릭터 코드 목록 복구 완료!
-        const characters =;
+        // 12개의 캐릭터 코드 목록 (정상 복구됨)
+        const characters = ['STA', 'KLT', 'TRO', 'KEL', 'DZE', 'NIC', 'GUK', 'KOR', 'LEN', 'MIL', 'MAK', 'KOL'];
 
         const categoryView = document.getElementById('categoryView');
         const detailView = document.getElementById('detailView');
@@ -70,6 +70,7 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => showDetail(char);
+                
                 // 메인 카드의 썸네일 경로를 0번 이미지로 변경
                 const thumbPath = `${char}/${char}_0.webp`; 
                 
@@ -89,6 +90,7 @@
             title.innerText = prefix + " 갤러리";
 
             detailView.innerHTML = ''; 
+            
             // i = 0 부터 시작하도록 변경 (0.webp 부터 출력)
             for (let i = 0; i <= 55; i++) { 
                 const fileName = `${prefix}_${i}.webp`; 
@@ -96,7 +98,6 @@
 
                 const card = document.createElement('div');
                 card.className = 'card';
-                // 클릭 시 해당 이미지의 전체 경로로 이동
                 card.onclick = () => location.href = '/' + fullPath;
 
                 card.innerHTML = `
@@ -128,7 +129,6 @@
         }
         
         function copyText(path) {
-            // 복사할 주소에 폴더 경로가 포함되도록 수정
             const url = window.location.origin + '/' + path;
             navigator.clipboard.writeText(url).then(() => alert('복사 완료: ' + url));
         }
@@ -138,4 +138,3 @@
     </script>
 </body>
 </html>
-
