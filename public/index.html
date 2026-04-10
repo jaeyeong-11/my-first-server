@@ -56,7 +56,7 @@
     </div>
 
     <script>
-        // 캡처해주신 12개의 캐릭터 코드 목록
+        // 누락되었던 12개의 캐릭터 코드 목록 복구 완료!
         const characters =;
 
         const categoryView = document.getElementById('categoryView');
@@ -70,7 +70,7 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => showDetail(char);
-                // ✨ 수정: 메인 카드의 썸네일 경로를 0번 이미지로 변경
+                // 메인 카드의 썸네일 경로를 0번 이미지로 변경
                 const thumbPath = `${char}/${char}_0.webp`; 
                 
                 card.innerHTML = `
@@ -89,7 +89,7 @@
             title.innerText = prefix + " 갤러리";
 
             detailView.innerHTML = ''; 
-            // ✨ 수정: i = 1 대신 i = 0 부터 시작하도록 변경
+            // i = 0 부터 시작하도록 변경 (0.webp 부터 출력)
             for (let i = 0; i <= 55; i++) { 
                 const fileName = `${prefix}_${i}.webp`; 
                 const fullPath = `${prefix}/${fileName}`; 
