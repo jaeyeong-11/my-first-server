@@ -492,10 +492,13 @@
                 const imgBox = document.createElement('div');
                 imgBox.className = 'img-box';
 
-                const stamp = document.createElement('span');
-                stamp.className = 'stamp mono';
-                stamp.innerHTML = `КАДР<b>№ ${pad(i, 2)}</b>`;
-                imgBox.appendChild(stamp);
+                /* 상세 보기에서는 도장 숨김 */
+                if (false) {
+                    const stamp = document.createElement('span');
+                    stamp.className = 'stamp mono';
+                    stamp.innerHTML = `КАДР<b>№ ${pad(i, 2)}</b>`;
+                    imgBox.appendChild(stamp);
+                }
                 imgBox.appendChild(buildImage(fullPath, '사진 없음'));
 
                 const info = document.createElement('div');
