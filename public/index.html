@@ -1,120 +1,522 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
+set="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    
-    <title>캐릭터 이미지 갤러리</title>
+    <title>페트로그라드 통신 · 인물 파일</title>
     <style>
         :root {
-            --bg-color: #1e1e1e; --container-bg: #252526; --card-bg: #2d2d30;
-            --text-color: #d4d4d4; --vscode-blue: #007acc; --border-color: #3e3e42;
+            --paper: #ece1c8;
+            --paper-shadow: #ddd0ae;
+            --card: #f4ead2;
+            --ink: #221b14;
+            --muted: #6f6450;
+            --accent: #93251f;
+            --accent-soft: rgba(147, 37, 31, 0.10);
+            --accent-soft-strong: rgba(147, 37, 31, 0.35);
+            --gold: #93702f;
+            --line: #c7b687;
+            --focus-ring: #c9534a;
         }
         body.light {
-            --bg-color: #ffffff; --container-bg: #f3f3f3; --card-bg: #ffffff;
-            --text-color: #333333; --border-color: #dddddd;
+            /* "조간 (Morning Edition)" — kept as default, named .light for JS compatibility */
         }
-        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Pretendard', 'Segoe UI', sans-serif; margin: 0; transition: 0.3s; }
-        
-        header { background-color: var(--vscode-blue); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; }
-        .btn:hover { background: rgba(255,255,255,0.3); }
+        body.dark {
+            --paper: #1b170f;
+            --paper-shadow: #100d08;
+            --card: #221c13;
+            --ink: #e9dec0;
+            --muted: #968a6c;
+            --accent: #d06b5e;
+            --accent-soft: rgba(208, 107, 94, 0.14);
+            --accent-soft-strong: rgba(208, 107, 94, 0.45);
+            --gold: #c9a45f;
+            --line: #3b3220;
+        }
 
-        .container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
-        
-        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .card:hover { transform: translateY(-5px); border-color: var(--vscode-blue); }
-        .img-box { width: 100%; height: 180px; background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info { padding: 15px; text-align: center; }
-        .card-info h3 { margin: 10px 0; font-size: 18px; }
-        .card-info p { font-size: 14px; color: #888; }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--ink);
+            background-color: var(--paper);
+            background-image:
+                radial-gradient(ellipse at 20% 0%, var(--paper-shadow) 0%, transparent 55%),
+                repeating-linear-gradient(0deg, rgba(0,0,0,0.025) 0px, rgba(0,0,0,0.025) 1px, transparent 1px, transparent 3px);
+            font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+            transition: background-color 0.35s, color 0.35s;
+        }
 
-        .back-area { margin-bottom: 20px; display: none; }
-        .back-btn { background: var(--vscode-blue); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .back-btn:hover { opacity: 0.9; }
+        .mono { font-family: 'SFMono-Regular', Menlo, Consolas, monospace; }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: color-mix(in srgb, var(--paper) 92%, transparent);
+            backdrop-filter: blur(6px);
+            border-bottom: 3px double var(--ink);
+        }
+        .masthead {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 18px 28px 12px;
+            text-align: center;
+        }
+        .masthead-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+        h1#siteTitle {
+            margin: 4px 0 2px;
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        .masthead-sub {
+            margin: 0 0 12px;
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.04em;
+        }
+        .masthead-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--line);
+            padding-top: 10px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        #title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-align: left;
+        }
+        #subtitle {
+            margin: 2px 0 0;
+            font-size: 11px;
+            color: var(--muted);
+            text-align: left;
+        }
+
+        .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+        .search-box {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--ink);
+            color: var(--ink);
+            font-size: 13px;
+            padding: 6px 2px;
+            min-width: 160px;
+            font-family: inherit;
+        }
+        .search-box::placeholder { color: var(--muted); font-style: italic; }
+        .search-box:focus { outline: none; border-bottom: 2px solid var(--accent); }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--ink);
+            color: var(--ink);
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 0.04em;
+            font-family: inherit;
+        }
+        .btn:hover { background: var(--ink); color: var(--paper); }
+        .btn:focus-visible, a:focus-visible, .card:focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 2px;
+        }
+
+        .container { max-width: 1180px; margin: 0 auto; padding: 32px 28px 70px; }
+
+        .empty-state {
+            text-align: center;
+            padding: 70px 20px;
+            color: var(--muted);
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--card);
+            border: 1px solid var(--line);
+            box-shadow: 0 1px 0 var(--line), 0 6px 14px rgba(0,0,0,0.18);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+        }
+        .card:hover, .card:focus-visible {
+            transform: rotate(-0.6deg) translateY(-4px);
+            box-shadow: 0 1px 0 var(--line), 0 14px 22px rgba(0,0,0,0.24);
+        }
+
+        .stamp {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+            width: 64px;
+            height: 64px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-12deg);
+            color: var(--accent);
+            background: color-mix(in srgb, var(--card) 55%, transparent);
+            mix-blend-mode: multiply;
+            opacity: 0.92;
+            text-align: center;
+            line-height: 1.1;
+            font-size: 9px;
+            letter-spacing: 0.04em;
+            padding: 4px;
+        }
+        body.dark .stamp { mix-blend-mode: normal; }
+        .stamp::before {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+        }
+        .stamp b { display: block; font-size: 11px; }
+
+        .img-box {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #000;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 1px solid var(--line);
+        }
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(0.85) sepia(0.2) contrast(1.05);
+            transition: filter 0.4s ease;
+        }
+        .card:hover .img-box img, .card:focus-visible .img-box img {
+            filter: grayscale(0.05) sepia(0.05) contrast(1.02);
+        }
+        .img-box .fallback {
+            color: var(--muted);
+            font-size: 12px;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .card-info { padding: 12px 14px 14px; }
+        .card-info h3 {
+            margin: 0 0 2px;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+        .card-info p { margin: 0; font-size: 11px; color: var(--muted); letter-spacing: 0.02em; }
+        .card-info strong {
+            display: block;
+            font-size: 12px;
+            word-break: break-all;
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .copy-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--accent-soft-strong);
+            color: var(--accent);
+            padding: 7px 0;
+            font-size: 11px;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .copy-btn:hover { background: var(--accent-soft); }
+        .copy-btn.copied { background: var(--accent); color: var(--card); border-color: var(--accent); }
+
+        .back-area { margin-bottom: 20px; }
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            padding: 4px 0;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 0.03em;
+            font-family: inherit;
+        }
+        .back-btn:hover { text-decoration: underline; }
+
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--ink);
+            color: var(--paper);
+            padding: 10px 18px;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+        @media (max-width: 480px) {
+            .masthead { padding: 14px 18px 10px; }
+            h1#siteTitle { font-size: 26px; }
+            .container { padding: 24px 18px 60px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .card, .toast, .img-box img, body { transition: none !important; }
+        }
     </style>
 </head>
-<body class="dark">
+<body class="light">
 
     <header>
-        <h2 id="title" style="margin:0;">캐릭터 갤러리</h2>
-        <div>
-            <button class="btn" onclick="toggleMode()">모드 전환</button>
+        <div class="masthead">
+            <div class="masthead-top mono">
+                <span>발행 : 임시검열위원회 공보부</span>
+                <span id="editionLabel">조간 · MORNING EDITION</span>
+            </div>
+            <h1 id="siteTitle">페트로그라드 통신</h1>
+            <p class="masthead-sub">— 격동의 시대, 격동의 인물들 · 인물 파일 갤러리 —</p>
+            <div class="masthead-bottom">
+                <div>
+                    <p id="title">전체 인물 목록</p>
+                    <p id="subtitle">22인의 인물 파일을 열람하십시오</p>
+                </div>
+                <div class="controls">
+                    <input
+                        type="search"
+                        id="searchInput"
+                        class="search-box"
+                        placeholder="성명·암호명 검색…"
+                        aria-label="캐릭터 검색"
+                    >
+                    <button class="btn" id="modeToggle" aria-pressed="false">석간으로</button>
+                </div>
+            </div>
         </div>
     </header>
 
     <div class="container">
-        <div class="back-area" id="backArea">
-            <button class="back-btn" onclick="showMain()">← 카테고리로 돌아가기</button>
+        <div class="back-area" id="backArea" style="display:none;">
+            <button class="back-btn mono" id="backBtn">← 전체 인물 목록으로</button>
         </div>
 
-        <div class="gallery" id="categoryView">
-            </div>
-
-        <div class="gallery" id="detailView" style="display: none;"></div>
+        <div class="gallery" id="categoryView" aria-label="캐릭터 카테고리 목록"></div>
+        <div class="gallery" id="detailView" style="display:none;" aria-label="이미지 상세 목록"></div>
+        <p class="empty-state" id="emptyState" style="display:none;">— 일치하는 인물 파일이 없습니다 —</p>
     </div>
 
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
     <script>
-        // 12개의 캐릭터 코드 목록 (정상 복구됨)
-        const characters = ['STA', 'KLT', 'TRO', 'KEL', 'DZE', 'NIC', 'GUK', 'KOR', 'LEN', 'MIL', 'MAK', 'KOL', 'ZUB', 'MAR', 'DIM', 'MEN', 'DIP', 'WIL', 'HIN', 'RIC', 'STE', 'BUK'];
+        const CHARACTERS = ['STA', 'KLT', 'TRO', 'KEL', 'DZE', 'NIC', 'GUK', 'KOR', 'LEN', 'MIL', 'MAK', 'KOL', 'ZUB', 'MAR', 'DIM', 'MEN', 'DIP', 'WIL', 'HIN', 'RIC', 'STE', 'BUK'];
+        const IMAGES_PER_CHARACTER = 56; // index 0 ~ 55
+
+        const CHARACTER_INFO = {
+            NIC:{name:'니콜라',group:'황실'},
+            DIM:{name:'디미트리야',group:'황실'},
+            LEN:{name:'레닌',group:'볼셰비키'},
+            TRO:{name:'트로츠키',group:'볼셰비키'},
+            STA:{name:'스탈린',group:'볼셰비키'},
+            DZE:{name:'제르진스카야',group:'볼셰비키'},
+            KLT:{name:'콜론타이',group:'볼셰비키'},
+            STE:{name:'슈테인베르크',group:'볼셰비키'},
+            KEL:{name:'케렌스키',group:'민주파'},
+            MIL:{name:'밀류코바',group:'민주파'},
+            MAR:{name:'마르토바',group:'민주파'},
+            GUK:{name:'구치코바',group:'민주파'},
+            KOR:{name:'콜차크',group:'군부'},
+            KOL:{name:'코르닐로바',group:'군부'},
+            MEN:{name:'만네르하임',group:'군부'},
+            MAK:{name:'마흐노',group:'중립파'},
+            ZUB:{name:'주바토바',group:'중립파'},
+            WIL:{name:'빌헬미나',group:'독일 제국'},
+            HIN:{name:'힌덴부르크',group:'독일 제국'},
+            RIC:{name:'리히트호펜',group:'독일 제국'}
+        };
+
+        const EMOTION_INFO = {
+            0:'명함·첫등장',1:'미소',2:'감탄',3:'황홀',4:'신뢰',5:'사랑',6:'경외',
+            7:'못마땅',8:'짜증',9:'격노',10:'경멸',11:'슬픔',12:'오열',13:'의문',
+            14:'당황',15:'부끄러움',16:'불안',17:'자신감',18:'공포',19:'황당',
+            20:'식사',21:'음주',22:'수면',23:'키스',
+            25:'펠라키스',26:'펠라치오',27:'진공펠라',28:'입싸',29:'정음',
+            30:'파이즈리',31:'가슴사정',32:'얼굴사정',33:'자위',34:'자위절정',
+            35:'가슴빨기',36:'핑거링',37:'커닐링구스',
+            38:'정상위삽입',39:'정상위사정',40:'정상위여운',
+            41:'후배위삽입',42:'후배위사정',43:'후배위여운',
+            44:'기승위삽입',45:'기승위사정',46:'기승위여운',
+            47:'가슴만지기',48:'들박삽입',49:'들박사정',50:'굴곡위',
+            51:'핸드잡',52:'핸드잡사정',53:'딥키스',54:'풋잡',55:'풋잡사정'
+        };
+
 
         const categoryView = document.getElementById('categoryView');
         const detailView = document.getElementById('detailView');
         const backArea = document.getElementById('backArea');
+        const emptyState = document.getElementById('emptyState');
         const title = document.getElementById('title');
+        const subtitle = document.getElementById('subtitle');
+        const searchInput = document.getElementById('searchInput');
+        const toastEl = document.getElementById('toast');
+        const editionLabel = document.getElementById('editionLabel');
+        const modeToggle = document.getElementById('modeToggle');
 
-        // 메인 화면에 12개의 캐릭터 카테고리 카드 생성
-        function initCategoryView() {
-            characters.forEach(char => {
+        let currentFilter = '';
+
+        function pad(num, len) { return String(num).padStart(len, '0'); }
+
+        function showToast(message) {
+            toastEl.textContent = message;
+            toastEl.classList.add('show');
+            clearTimeout(toastEl._timer);
+            toastEl._timer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+        }
+
+        function makeFallback(label) {
+            const div = document.createElement('div');
+            div.className = 'fallback mono';
+            div.textContent = label;
+            return div;
+        }
+
+        function buildImage(src, fallbackLabel) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.loading = 'lazy';
+            img.alt = fallbackLabel;
+            img.addEventListener('error', () => {
+                const box = img.parentElement;
+                img.remove();
+                box.appendChild(makeFallback(fallbackLabel));
+            }, { once: true });
+            return img;
+        }
+
+        function renderCategoryView(filterText = '') {
+            categoryView.innerHTML = '';
+            const filtered = CHARACTERS.filter(c => c.toLowerCase().includes(filterText.toLowerCase()));
+            emptyState.style.display = filtered.length === 0 ? 'block' : 'none';
+
+            filtered.forEach((char, idx) => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = () => showDetail(char);
-                
-                // 메인 카드의 썸네일 경로를 0번 이미지로 변경
-                const thumbPath = `${char}/${char}_0.webp`; 
-                
-                card.innerHTML = `
-                    <div class="img-box"><img src="${thumbPath}" onerror="this.src='https://via.placeholder.com/300x200?text=${char}_0'"></div>
-                    <div class="card-info"><h3>${char} 미리보기</h3><p>${char} 이미지 시리즈</p></div>
-                `;
+                card.tabIndex = 0;
+                card.setAttribute('role', 'button');
+                card.setAttribute('aria-label', `${char} 인물 파일 열기`);
+
+                const imgBox = document.createElement('div');
+                imgBox.className = 'img-box';
+
+                const stamp = document.createElement('span');
+                stamp.className = 'stamp mono';
+                stamp.innerHTML = `ДОСЬЕ<b>№ ${pad(idx + 1, 2)}</b>`;
+                imgBox.appendChild(stamp);
+                imgBox.appendChild(buildImage(`${char}/${char}_0.webp`, `${char} 사진 없음`));
+
+                const info = document.createElement('div');
+                info.className = 'card-info';
+                const meta = CHARACTER_INFO[char] || {name:char, group:'기타'};
+                info.innerHTML = `<h3>${char}</h3><strong>${meta.name}</strong><p>${meta.group} · 표정 56종</p>`;
+
+                card.appendChild(imgBox);
+                card.appendChild(info);
+
+                const open = () => showDetail(char);
+                card.addEventListener('click', open);
+                card.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+                });
+
                 categoryView.appendChild(card);
             });
         }
 
-        // 특정 캐릭터(prefix) 클릭 시 상세 갤러리 표시
         function showDetail(prefix) {
             categoryView.style.display = 'none';
             detailView.style.display = 'grid';
             backArea.style.display = 'block';
-            title.innerText = prefix + " 갤러리";
+            emptyState.style.display = 'none';
+            title.textContent = prefix + ' — 인물 파일';
+            subtitle.textContent = `수록 사진 0–${IMAGES_PER_CHARACTER - 1} · 클릭하여 원본 보기`;
+            searchInput.style.display = 'none';
 
-            detailView.innerHTML = ''; 
-            
-            // i = 0 부터 시작하도록 변경 (0.webp 부터 출력)
-            for (let i = 0; i <= 55; i++) { 
-                const fileName = `${prefix}_${i}.webp`; 
-                const fullPath = `${prefix}/${fileName}`; 
+            detailView.innerHTML = '';
+
+            for (let i = 0; i < IMAGES_PER_CHARACTER; i++) {
+                const fileName = `${prefix}_${i}.webp`;
+                const fullPath = `${prefix}/${fileName}`;
 
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = () => location.href = '/' + fullPath;
 
-                card.innerHTML = `
-                    <div class="img-box">
-                        <img src="${fullPath}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                    </div>
-                    <div class="card-info">
-                        <strong>${fileName}</strong><br><br>
-                        <button class="btn" style="background:var(--vscode-blue); width:100%" 
-                            onclick="event.stopPropagation(); copyText('${fullPath}')">
-                            주소 복사
-                        </button>
-                    </div>
-                `;
+                const imgBox = document.createElement('div');
+                imgBox.className = 'img-box';
+
+                const stamp = document.createElement('span');
+                stamp.className = 'stamp mono';
+                stamp.innerHTML = `КАДР<b>№ ${pad(i, 2)}</b>`;
+                imgBox.appendChild(stamp);
+                imgBox.appendChild(buildImage(fullPath, '사진 없음'));
+
+                const info = document.createElement('div');
+                info.className = 'card-info';
+
+                const strong = document.createElement('strong');
+                strong.className = 'mono';
+                strong.textContent = `${fileName} · ${EMOTION_INFO[i] || '미분류'}`;
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn mono';
+                copyBtn.type = 'button';
+                copyBtn.textContent = '주소 복사';
+                copyBtn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    copyText(fullPath, copyBtn);
+                });
+
+                info.appendChild(strong);
+                info.appendChild(copyBtn);
+
+                card.appendChild(imgBox);
+                card.appendChild(info);
+                card.addEventListener('click', () => window.open('/' + fullPath, '_blank', 'noopener'));
+
                 detailView.appendChild(card);
             }
         }
@@ -123,21 +525,54 @@
             categoryView.style.display = 'grid';
             detailView.style.display = 'none';
             backArea.style.display = 'none';
-            title.innerText = "캐릭터 갤러리";
+            searchInput.style.display = '';
+            title.textContent = '전체 인물 목록';
+            subtitle.textContent = '22인의 인물 파일을 열람하십시오';
+            renderCategoryView(currentFilter);
         }
 
         function toggleMode() {
-            const isLight = document.body.classList.toggle('light');
-            document.querySelector('.btn').innerText = isLight ? "다크 모드" : "라이트 모드";
-        }
-        
-        function copyText(path) {
-            const url = window.location.origin + '/' + path;
-            navigator.clipboard.writeText(url).then(() => alert('복사 완료: ' + url));
+            const isDark = document.body.classList.toggle('dark');
+            document.body.classList.toggle('light', !isDark);
+            editionLabel.textContent = isDark ? '석간 · EVENING EDITION' : '조간 · MORNING EDITION';
+            modeToggle.textContent = isDark ? '조간으로' : '석간으로';
+            modeToggle.setAttribute('aria-pressed', String(isDark));
         }
 
-        // 페이지 로드 시 카테고리 뷰 초기화
-        initCategoryView();
+        async function copyText(path, btnEl) {
+            const url = window.location.origin + '/' + path;
+            try {
+                await navigator.clipboard.writeText(url);
+            } catch (err) {
+                const tmp = document.createElement('textarea');
+                tmp.value = url;
+                tmp.style.position = 'fixed';
+                tmp.style.opacity = '0';
+                document.body.appendChild(tmp);
+                tmp.select();
+                document.execCommand('copy');
+                tmp.remove();
+            }
+            showToast('복사 완료: ' + url);
+            if (btnEl) {
+                const original = btnEl.textContent;
+                btnEl.textContent = '복사됨';
+                btnEl.classList.add('copied');
+                setTimeout(() => {
+                    btnEl.textContent = original;
+                    btnEl.classList.remove('copied');
+                }, 1500);
+            }
+        }
+
+        modeToggle.addEventListener('click', toggleMode);
+        document.getElementById('backBtn').addEventListener('click', showMain);
+        searchInput.addEventListener('input', e => {
+            currentFilter = e.target.value;
+            renderCategoryView(currentFilter);
+        });
+
+        renderCategoryView();
     </script>
 </body>
 </html>
