@@ -216,11 +216,11 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            filter: grayscale(0.85) sepia(0.2) contrast(1.05);
+            filter: none;
             transition: filter 0.4s ease;
         }
         .card:hover .img-box img, .card:focus-visible .img-box img {
-            filter: grayscale(0.05) sepia(0.05) contrast(1.02);
+            filter: brightness(1.02);
         }
         .img-box .fallback {
             color: var(--muted);
@@ -456,7 +456,7 @@
                 const info = document.createElement('div');
                 info.className = 'card-info';
                 const meta = CHARACTER_INFO[char] || {name:char, group:'기타'};
-                info.innerHTML = `<h3>${char}</h3><strong>${meta.name}</strong><p>${meta.group} · 에셋 56종</p>`;
+                info.innerHTML = `<h3>${char}</h3><strong>${meta.name}</strong><p>${meta.group} · 표정 56종</p>`;
 
                 card.appendChild(imgBox);
                 card.appendChild(info);
